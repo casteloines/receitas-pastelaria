@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caderno de Pastelaria</title>
+<style>
+:root{--ink:#343536;--muted:#747775;--paper:#fbfaf7;--white:#fff;--rose:#c99aa7;--rose-dark:#8e5969;--sage:#9aacac;--line:#e8e2dd;--soft:#f2e9e9;--shadow:0 8px 28px rgba(55,45,42,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 "Segoe UI",Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.top{background:linear-gradient(120deg,#e7eeee,#f5e9ec);padding:34px 5vw 28px;border-bottom:1px solid var(--line)}
+.top-inner{max-width:1240px;margin:auto;display:flex;justify-content:space-between;gap:24px;align-items:center}
+.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:11px;color:var(--rose-dark);font-weight:700}
+h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(30px,4vw,48px);margin:5px 0 4px;letter-spacing:-.03em}
+.subtitle{color:#606767;margin:0}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap}
+button,.button{border:1px solid var(--line);background:white;border-radius:10px;padding:10px 14px;color:var(--ink);font-weight:600}
+.primary{background:var(--rose-dark);color:white;border-color:var(--rose-dark)}button:hover{filter:brightness(.97)}
+.wrap{max-width:1240px;margin:24px auto;padding:0 22px}
+.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:22px;flex-wrap:wrap}
+.search{flex:1;min-width:220px;position:relative}
+.search input{width:100%;padding:14px 16px 14px 44px;border:1px solid var(--line);border-radius:12px;background:white;box-shadow:var(--shadow);outline-color:var(--sage)}
+.search span{position:absolute;left:15px;top:11px;font-size:20px;color:var(--muted)}
+select{padding:13px;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink)}
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:25px}
+.sidebar{background:white;border:1px solid var(--line);border-radius:16px;padding:17px;height:max-content;position:sticky;top:14px}
+.side-title{font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);font-weight:700;margin:3px 8px 12px}
+.cat{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;background:transparent;border:0;padding:10px 9px;border-radius:9px;font-weight:500;color:#4b4d4c}
+.cat.active{background:var(--soft);color:var(--rose-dark);font-weight:700}
+.count{color:#92918e;font-size:12px}
+.content-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:0 0 15px}
+h2{font-family:Georgia,serif;font-size:27px;font-weight:400;margin:0}
+.result-count{color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px}
+.recipe-card{background:white;border:1px solid var(--line);border-radius:15px;padding:18px;min-height:175px;display:flex;flex-direction:column;box-shadow:0 3px 12px rgba(55,45,42,.025)}
+.recipe-card .tag{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--rose-dark);font-weight:700}
+.recipe-card h3{font:21px/1.2 Georgia,serif;margin:10px 0 7px;font-weight:400}
+.recipe-card p{margin:0;color:var(--muted);font-size:13px;flex:1}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:17px}
+.text-btn{padding:0;border:0;background:transparent;color:var(--rose-dark);font-size:13px}
+.empty{background:white;border:1px dashed #d7cbc7;border-radius:16px;padding:45px 25px;text-align:center;color:var(--muted)}
+.empty h3{font:24px Georgia,serif;color:var(--ink);font-weight:400;margin:0 0 8px}
+.note{font-size:12px;color:var(--muted);margin-top:22px}
+.overlay{position:fixed;inset:0;background:rgba(38,36,35,.42);display:none;align-items:center;justify-content:center;padding:18px;z-index:5}
+.overlay.open{display:flex}
+.modal{background:var(--paper);width:min(850px,100%);max-height:92vh;overflow:auto;border-radius:18px;box-shadow:0 20px 70px #0002}
+.modal-head{position:sticky;top:0;background:var(--paper);padding:20px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;z-index:1}
+.modal-head h2{font-size:25px}.modal-body{padding:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}
+label{font-size:12px;font-weight:700;letter-spacing:.03em;color:#656967}
+input,textarea, .field select{border:1px solid var(--line);border-radius:9px;padding:11px;background:white;min-width:0;outline-color:var(--sage)}
+textarea{min-height:105px;resize:vertical}
+.small-help{font-size:12px;color:var(--muted);margin-top:4px}
+.modal-actions{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+.recipe-detail{max-width:760px;margin:auto}
+.detail-top{padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.detail-top h2{font-size:36px;margin:6px 0}
+.detail-meta{display:flex;gap:9px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.pill{background:#eee8e5;border-radius:99px;padding:4px 10px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.detail-section h3{font:22px Georgia,serif;font-weight:400;margin:0 0 12px}
+.detail-section pre{font:14px/1.7 "Segoe UI",Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.detail-section.full{grid-column:1/-1}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+footer{max-width:1240px;padding:0 22px 28px;margin:auto;color:var(--muted);font-size:12px}
+@media(max-width:760px){.top-inner{align-items:flex-start;flex-direction:column}.layout{grid-template-columns:1fr}.sidebar{position:static}.sidebar-list{display:flex;flex-wrap:wrap;gap:5px}.cat{width:auto}.side-title{width:100%}.form-grid,.detail-grid{grid-template-columns:1fr}.field.full,.detail-section.full{grid-column:auto}.wrap{padding:0 14px}.top{padding:25px 20px}}
+@media print{.top,.sidebar,.toolbar,.detail-actions,.modal-head,footer{display:none!important}.overlay{display:block;position:static;background:white;padding:0}.modal{max-height:none;overflow:visible;box-shadow:none;width:100%}.modal-body{padding:0}.detail-top h2{font-size:30px}body{background:white}.layout{display:block}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+<div><div class="eyebrow">Arquivo pessoal · Pastelaria</div><h1>Caderno de Pastelaria</h1><p class="subtitle">As tuas receitas, organizadas e sempre à mão.</p></div>
+<div class="top-actions"><button id="exportBtn">Exportar cópia</button><button id="importBtn">Importar cópia</button><button class="primary" id="addBtn">＋ Nova receita</button><input type="file" id="importFile" accept=".json,application/json" hidden></div>
+</div></header>
+<main class="wrap">
+<div class="toolbar"><div class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Pesquisar receita, ingrediente, técnica…"></div><select id="sortSelect" aria-label="Ordenar receitas"><option value="az">Nome: A–Z</option><option value="za">Nome: Z–A</option><option value="new">Adicionadas recentemente</option></select></div>
+<div class="layout"><aside class="sidebar"><div class="side-title">Índice de receitas</div><div id="categoryList" class="sidebar-list"></div><p class="small-help">Escolhe uma secção ou pesquisa em todo o caderno.</p></aside>
+<section><div class="content-head"><div><div class="eyebrow">Biblioteca</div><h2 id="sectionTitle">Todas as receitas</h2></div><div class="result-count" id="resultCount">0 receitas</div></div><div id="recipeGrid" class="cards"></div><p class="note">Dica: usa a pesquisa para encontrar receitas pelo nome, ingredientes, método ou notas. Os dados ficam guardados neste navegador. Exporta uma cópia regularmente para não perderes o teu caderno.</p></section></div>
+</main>
+<footer>Modelo editável de receitas · Podes acrescentar secções e alterar os nomes das categorias no formulário de receita.</footer>
+<div class="overlay" id="editorOverlay"><div class="modal"><div class="modal-head"><h2 id="editorTitle">Nova receita</h2><button id="closeEditor">✕ Fechar</button></div><div class="modal-body">
+<form id="recipeForm"><input type="hidden" id="recipeId"><div class="form-grid">
+<div class="field full"><label for="name">NOME DA RECEITA *</label><input id="name" required placeholder="Ex.: Massa sablée"></div>
+<div class="field"><label for="category">SECÇÃO *</label><input id="category" list="categories" required placeholder="Escolhe ou escreve uma secção"><datalist id="categories"></datalist></div>
+<div class="field"><label for="yield">RENDIMENTO / QUANTIDADE</label><input id="yield" placeholder="Ex.: 1 tabuleiro · 20 unidades"></div>
+<div class="field"><label for="time">TEMPO</label><input id="time" placeholder="Ex.: 25 min + repouso"></div>
+<div class="field"><label for="temperature">TEMPERATURA / COZEDURA</label><input id="temperature" placeholder="Ex.: 170 °C · 12–15 min"></div>
+<div class="field full"><label for="ingredients">INGREDIENTES *</label><textarea id="ingredients" required placeholder="Ingrediente — quantidade (g/ml/un.)&#10;Ingrediente — quantidade"></textarea></div>
+<div class="field full"><label for="method">MÉTODO / PREPARAÇÃO *</label><textarea id="method" required placeholder="1. Preparar…&#10;2. Misturar…&#10;3. Cozer / arrefecer…"></textarea></div>
+<div class="field full"><label for="notes">NOTAS TÉCNICAS</label><textarea id="notes" placeholder="Textura, temperaturas, pontos críticos, conservação, validade, possíveis variações…"></textarea></div>
+<div class="field full"><label for="tags">PALAVRAS-CHAVE</label><input id="tags" placeholder="Ex.: chocolate, sem glúten, congelável, base"></div>
+</div><p class="small-help">Podes escrever quantidades em gramas e acrescentar notas de produção. Os campos podem ficar vazios, exceto os assinalados com *.</p><div class="modal-actions"><button type="button" id="cancelEditor">Cancelar</button><button type="submit" class="primary">Guardar receita</button></div></form>
+</div></div></div>
+<div class="overlay" id="detailOverlay"><div class="modal"><div class="modal-head"><h2>Ficha de receita</h2><button id="closeDetail">✕ Fechar</button></div><div class="modal-body" id="detailBody"></div></div></div>
+<script>
+const DEFAULT_CATEGORIES = [
+"Massas base","Cremes e recheios","Coberturas e acabamentos","Bolos","Tartes e tarteletes",
+"Petit fours","Sobremesas portuguesas","Sobremesas empratadas","Mousses e entremets",
+"Biscoitos e bolachas","Chocolate e decoração","Gelados e sorvetes","Pães e massas lêvedas",
+"Molhos, coulis e compotas","Preparações salgadas","Outras receitas"
+];
+const KEY="cadernoPastelaria_v1";
+let recipes=[];
+try{recipes=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(recipes))recipes=[]}catch(e){recipes=[]}
+let selectedCategory="Todas as receitas";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const allCategories=()=>[...new Set([...DEFAULT_CATEGORIES,...recipes.map(r=>r.category).filter(Boolean)])];
+function save(){localStorage.setItem(KEY,JSON.stringify(recipes));render()}
+function renderCategories(){
+ const cats=["Todas as receitas",...allCategories()];
+ $("categoryList").innerHTML=cats.map(c=>`<button class="cat ${selectedCategory===c?"active":""}" data-cat="${esc(c)}"><span>${esc(c)}</span><span class="count">${c==="Todas as receitas"?recipes.length:recipes.filter(r=>r.category===c).length}</span></button>`).join("");
+ $("categoryList").querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{selectedCategory=b.dataset.cat;render()});
+ $("categories").innerHTML=allCategories().map(c=>`<option value="${esc(c)}"></option>`).join("");
+}
+function render(){
+ renderCategories();
+ const q=$("searchInput").value.trim().toLocaleLowerCase("pt-PT");
+ let list=recipes.filter(r=>(selectedCategory==="Todas as receitas"||r.category===selectedCategory)&&(!q||[r.name,r.category,r.yield,r.time,r.temperature,r.ingredients,r.method,r.notes,r.tags].join(" ").toLocaleLowerCase("pt-PT").includes(q)));
+ const sort=$("sortSelect").value;
+ list.sort((a,b)=>sort==="za"?b.name.localeCompare(a.name,"pt-PT"):sort==="new"?(b.updated||0)-(a.updated||0):a.name.localeCompare(b.name,"pt-PT"));
+ $("sectionTitle").textContent=selectedCategory;
+ $("resultCount").textContent=`${list.length} ${list.length===1?"receita":"receitas"}`;
+ if(!list.length){$("recipeGrid").innerHTML=`<div class="empty" style="grid-column:1/-1"><h3>${q?"Não foram encontradas receitas":"O teu caderno começa aqui"}</h3><p>${q?"Experimenta outros termos ou muda de secção.":"Adiciona a primeira receita quando tiveres o caderno contigo. A estrutura já está pronta."}</p><button class="primary" onclick="openEditor()">＋ Adicionar receita</button></div>`;return}
+ $("recipeGrid").innerHTML=list.map(r=>`<article class="recipe-card"><div class="tag">${esc(r.category)}</div><h3>${esc(r.name)}</h3><p>${esc((r.ingredients||"").split("\\n").filter(Boolean).slice(0,2).join(" · ")||"Sem resumo de ingredientes")}</p><div class="card-bottom"><span class="count">${esc(r.yield||"Rendimento não indicado")}</span><button class="text-btn" data-view="${esc(r.id)}">Abrir ficha ↗</button></div></article>`).join("");
+ $("recipeGrid").querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>openDetail(b.dataset.view));
+}
+function openEditor(id=null){
+ const r=recipes.find(x=>x.id===id)||{};
+ $("recipeForm").reset();$("recipeId").value=r.id||"";
+ $("editorTitle").textContent=id?"Editar receita":"Nova receita";
+ ["name","category","yield","time","temperature","ingredients","method","notes","tags"].forEach(k=>$(k).value=r[k]||"");
+ $("editorOverlay").classList.add("open");$("name").focus();
+}
+function closeEditor(){$("editorOverlay").classList.remove("open")}
+function openDetail(id){
+ const r=recipes.find(x=>x.id===id);if(!r)return;
+ $("detailBody").innerHTML=`<div class="recipe-detail"><div class="detail-actions"><button class="primary" id="editCurrent">Editar receita</button><button id="printCurrent">Imprimir ficha</button><button id="deleteCurrent">Eliminar</button></div><div class="detail-top"><div class="eyebrow">${esc(r.category)}</div><h2>${esc(r.name)}</h2><div class="detail-meta">${r.yield?`<span class="pill">${esc(r.yield)}</span>`:""}${r.time?`<span class="pill">${esc(r.time)}</span>`:""}${r.temperature?`<span class="pill">${esc(r.temperature)}</span>`:""}</div></div><div class="detail-grid"><section class="detail-section"><h3>Ingredientes</h3><pre>${esc(r.ingredients||"—")}</pre></section><section class="detail-section"><h3>Método</h3><pre>${esc(r.method||"—")}</pre></section><section class="detail-section full"><h3>Notas técnicas</h3><pre>${esc(r.notes||"—")}</pre></section><section class="detail-section full"><h3>Palavras-chave</h3><pre>${esc(r.tags||"—")}</pre></section></div></div>`;
+ $("detailOverlay").classList.add("open");
+ $("editCurrent").onclick=()=>{$("detailOverlay").classList.remove("open");openEditor(id)};
+ $("printCurrent").onclick=()=>window.print();
+ $("deleteCurrent").onclick=()=>{if(confirm("Eliminar esta receita? Esta ação não pode ser anulada, a menos que tenhas uma cópia exportada.")){recipes=recipes.filter(x=>x.id!==id);$("detailOverlay").classList.remove("open");save()}};
+}
+$("recipeForm").onsubmit=e=>{e.preventDefault();const id=$("recipeId").value||String(Date.now())+Math.random().toString(16).slice(2,6);const r={id,updated:Date.now()};["name","category","yield","time","temperature","ingredients","method","notes","tags"].forEach(k=>r[k]=$(k).value.trim());const idx=recipes.findIndex(x=>x.id===id);if(idx>=0)recipes[idx]=r;else recipes.push(r);selectedCategory="Todas as receitas";$("searchInput").value="";closeEditor();save()};
+$("addBtn").onclick=()=>openEditor();$("closeEditor").onclick=closeEditor;$("cancelEditor").onclick=closeEditor;
+$("closeDetail").onclick=()=>$("detailOverlay").classList.remove("open");
+$("searchInput").addEventListener("input",render);$("sortSelect").addEventListener("change",render);
+$("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify({app:"Caderno de Pastelaria",version:1,exportedAt:new Date().toISOString(),recipes},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="caderno-de-pastelaria-backup.json";a.click();URL.revokeObjectURL(a.href)};
+$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());const incoming=Array.isArray(data)?data:data.recipes;if(!Array.isArray(incoming))throw new Error();if(confirm(`Importar ${incoming.length} receitas? As receitas com o mesmo ID serão substituídas; as restantes serão acrescentadas.`)){const map=new Map(recipes.map(r=>[r.id,r]));incoming.forEach(r=>{if(r&&r.name&&r.category){if(!r.id)r.id=String(Date.now())+Math.random().toString(16).slice(2);map.set(r.id,r)}});recipes=[...map.values()];save();alert("Caderno importado.")}}catch(err){alert("Não foi possível ler este ficheiro. Escolhe uma cópia JSON exportada pelo Caderno de Pastelaria.")}e.target.value=""};
+render();
+</script>
+</body></html>
